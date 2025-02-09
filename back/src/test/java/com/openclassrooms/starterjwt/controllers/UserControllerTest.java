@@ -1,11 +1,9 @@
 package com.openclassrooms.starterjwt.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.models.User;
 import com.openclassrooms.starterjwt.repository.SessionRepository;
 import com.openclassrooms.starterjwt.repository.TeacherRepository;
 import com.openclassrooms.starterjwt.repository.UserRepository;
-import com.openclassrooms.starterjwt.services.SessionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +28,11 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private SessionRepository sessionRepository;
     @Autowired
     private TeacherRepository teacherRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private SessionService sessionService;
 
     @BeforeEach
     void setup() {
@@ -75,7 +69,6 @@ class UserControllerTest {
     }
 
     @Test
-
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void testFindById_BadRequest() throws Exception {
 
@@ -99,11 +92,9 @@ class UserControllerTest {
         assertFalse(userRepository.findById(user.getId()).isPresent());
     }
 
-
     @Test
     @WithMockUser(username = "otheruser@example.com", roles = {"USER"})
     void testDelete_Unauthorized() throws Exception {
-
         User user = new User();
         user.setEmail("user@example.com");
         user = userRepository.save(user);
