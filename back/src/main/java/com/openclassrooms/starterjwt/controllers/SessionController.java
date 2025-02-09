@@ -51,11 +51,11 @@ public class SessionController {
 
     @PostMapping()
     public ResponseEntity<?> create(@Valid @RequestBody SessionDto sessionDto) {
-        log.info(sessionDto);
+        log.info("§§§§§§§§§ D T O "+sessionDto);
 
         Session session = this.sessionService.create(this.sessionMapper.toEntity(sessionDto));
 
-        log.info(session);
+        log.info("!!!!!!!!!!!!! S!!!"+session);
         return ResponseEntity.ok().body(this.sessionMapper.toDto(session));
     }
 
