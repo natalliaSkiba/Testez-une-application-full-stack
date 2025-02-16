@@ -56,7 +56,10 @@ class SessionServiceTest {
     void testFindAll_ShouldReturnListOfSessions() {
         Session session1 = new Session();
         Session session2 = new Session();
-        List<Session> sessionList = List.of(session1, session2);
+
+        List<Session> sessionList = new ArrayList<>();
+        sessionList.add(session1);
+        sessionList.add(session2);
 
         when(sessionRepository.findAll()).thenReturn(sessionList);
 
@@ -152,9 +155,11 @@ class SessionServiceTest {
 
         User user = new User();
         user.setId(userId);
-
+        List<User> userList = new ArrayList<>();
+        userList.add(user);
         Session session = new Session();
-        session.setUsers(new ArrayList<>(List.of(user)));
+        session.setUsers(userList);
+
 
         when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -168,8 +173,11 @@ class SessionServiceTest {
         Long sessionId = 1L, userId = 2L;
         User user = new User();
         user.setId(userId);
+
+        List<User> userlist= new  ArrayList<>();
+        userlist.add(user);
         Session session = new Session();
-        session.setUsers(new ArrayList<>(List.of(user)));
+        session.setUsers(userlist);
 
         when(sessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(sessionRepository.save(any())).thenReturn(session);

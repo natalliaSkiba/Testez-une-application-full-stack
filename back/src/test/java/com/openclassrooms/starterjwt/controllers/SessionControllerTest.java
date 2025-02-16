@@ -83,10 +83,10 @@ class SessionControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/session")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()) // Проверяем, что статус 200 OK
-                .andExpect(jsonPath("$", hasSize(2))) // Проверяем, что в ответе два объекта
-                .andExpect(jsonPath("$[0].name", is("Yoga Session"))) // Проверяем имя первой сессии
-                .andExpect(jsonPath("$[1].name", is("Java Workshop"))); // Проверяем имя второй сессии
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("Yoga Session")))
+                .andExpect(jsonPath("$[1].name", is("Java Workshop")));
     }
 
     @Test
