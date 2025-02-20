@@ -102,9 +102,10 @@ class UserTest {
         assertNotNull(user);
         assertEquals("test@example.com", user.getEmail());
     }
+
     @Test
     void testRequiredArgsConstructor() {
-        User user = new User("test@example.com", "Doe", "John", "password123",true);
+        User user = new User("test@example.com", "Doe", "John", "password123", true);
 
         assertNotNull(user);
         assertEquals("test@example.com", user.getEmail());
@@ -117,6 +118,7 @@ class UserTest {
         assertNull(user.getCreatedAt());
         assertNull(user.getUpdatedAt());
     }
+
     @Test
     void testNoArgsConstructor() {
         User user = new User();
