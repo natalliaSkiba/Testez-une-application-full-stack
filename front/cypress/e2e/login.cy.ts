@@ -1,3 +1,5 @@
+import * as cy from 'cypress';
+
 describe('Login spec', () => {
   it('Login successfull', () => {
     cy.visit('/login')
