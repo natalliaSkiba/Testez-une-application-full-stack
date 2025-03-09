@@ -12,24 +12,22 @@ describe('UserService', () => {
 
   const mockUser: User = {
     id: 1,
-    email: 'toto@mail.com', 
-    lastName: 'tata', 
-    firstName: 'toto', 
+    email: 'johndoe@mail.com', 
+    lastName: 'Doe', 
+    firstName: 'John', 
     admin: true, 
     password: 'passwd', 
     createdAt: new Date(), 
     updatedAt: new Date()
-  }
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports:[
+      imports: [
         HttpClientTestingModule,
         HttpClientModule
       ],
-      providers: [
-        UserService
-      ]
+      providers: [UserService]
     });
 
     service = TestBed.inject(UserService);
@@ -44,27 +42,27 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch a user by ID using the getById() method', () => {
+  it('should fetch a user by ID', () => {
     const userId = '1';
 
     service.getById(userId).subscribe((user) => {
       expect(user).toEqual(mockUser);
     });
 
-    const req = httpMock.expectOne(`api/user/${userId}`); // Intercept the HTTP request
-    expect(req.request.method).toBe('GET');             // Verify the request method
-    req.flush(mockUser);                                // Simulate a successful response
+    const req = httpMock.expectOne(`api/user/${userId}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockUser);
   });
 
-  it('should delete a user by ID using the delete() method', () => {
+  it('should delete a user by ID', () => {
     const userId = '1';
 
     service.delete(userId).subscribe((response) => {
       expect(response).toEqual({ success: true });
     });
 
-    const req = httpMock.expectOne(`api/user/${userId}`); // Intercept the HTTP request
-    expect(req.request.method).toBe('DELETE');           // Verify the request method
-    req.flush({ success: true });                        // Simulate a successful response
+    const req = httpMock.expectOne(`api/user/${userId}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ success: true });
   });
 });

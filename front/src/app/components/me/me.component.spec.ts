@@ -12,12 +12,9 @@ import { MeComponent } from './me.component';
 
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { User } from 'src/app/interfaces/user.interface';
 import { By } from '@angular/platform-browser';
-import { toUpper } from 'cypress/types/lodash';
-import { FixedSizeVirtualScrollStrategy } from '@angular/cdk/scrolling';
-
 
 describe('MeComponent', () => {
   let component: MeComponent;
@@ -35,17 +32,18 @@ describe('MeComponent', () => {
         id: 1
       },
       logOut: jest.fn()
-    }
+    };
     mockUserService = {
       getById: jest.fn(),
       delete: jest.fn()
-    }
+    };
     mockRouter = {
       navigate: jest.fn()
-    }
+    };
     mockSnackBar = {
       open: jest.fn()
-    }
+    };
+
     mockUser = {
       id: 1,
       firstName: 'John',
@@ -55,7 +53,7 @@ describe('MeComponent', () => {
       password: 'pass',
       createdAt: new Date('2025-02-23'),
       updatedAt: new Date('2025-02-23'),
-    }
+    };
 
     await TestBed.configureTestingModule({
       declarations: [MeComponent],
@@ -67,17 +65,16 @@ describe('MeComponent', () => {
         MatIconModule,
         MatInputModule
       ],
-      providers: [ { provide: SessionService, useValue: mockSessionService },
+      providers: [
+        { provide: SessionService, useValue: mockSessionService },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: mockRouter },
         { provide: MatSnackBar, useValue: mockSnackBar }
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MeComponent);
     component = fixture.componentInstance;
-   // fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -85,29 +82,21 @@ describe('MeComponent', () => {
   });
 
   it('should fetch user data on init', () => {
-    
     mockUserService.getById.mockReturnValue(of(mockUser));
-
     fixture.detectChanges();
-
     expect(mockUserService.getById).toHaveBeenCalledWith('1');
     expect(component.user).toEqual(mockUser);
   });
 
-  
   it('should navigate back when back() is called', () => {
     jest.spyOn(window.history, 'back');
-    
     component.back();
-
     expect(window.history.back).toHaveBeenCalled();
   });
 
   it('should delete the user and log out', () => {
     mockUserService.delete.mockReturnValue(of(null));
-
     component.delete();
-
     expect(mockUserService.delete).toHaveBeenCalledWith('1');
     expect(mockSnackBar.open).toHaveBeenCalledWith(
       'Your account has been deleted !',
@@ -120,16 +109,18 @@ describe('MeComponent', () => {
 
   it('should display the correct user data', () => {
     mockUserService.getById.mockReturnValue(of(mockUser));
-  
     fixture.detectChanges();
-  
     const displayNames = fixture.debugElement.queryAll(By.css('p')); 
-    
     expect(displayNames[0].nativeElement.textContent).toContain('Name:');
     expect(displayNames[0].nativeElement.textContent).toContain(mockUser.firstName);
     expect(displayNames[0].nativeElement.textContent).toContain(mockUser.lastName.toUpperCase());
-  
     expect(displayNames[1].nativeElement.textContent).toContain('Email:');
     expect(displayNames[1].nativeElement.textContent).toContain(mockUser.email);
+  });
+
+  it('should handle error if fetching user data fails', () => {
+    mockUserService.getById.mockReturnValue(throwError(() => new Error('User not found')));
+    fixture.detectChanges();
+    expect(component.user).toBeUndefined();
   });
 });

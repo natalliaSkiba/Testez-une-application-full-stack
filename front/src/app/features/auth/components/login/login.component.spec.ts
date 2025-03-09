@@ -18,38 +18,39 @@ describe('LoginComponent (Jest)', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  // Объявляем переменные для поддельных (mock) сервисов
+  // Declare variables for mock services
   let authServiceMock: jest.Mocked<AuthService>;
   let routerMock: jest.Mocked<Router>;
   let sessionServiceMock: jest.Mocked<SessionService>;
 
   beforeEach(async () => {
-    // Создаём «издёвки» для сервисов
+    // Create mocks for services
     authServiceMock = {
       login: jest.fn(),
-      // Если в AuthService есть ещё методы, их также нужно замокать (например: logout: jest.fn(), и т.п.)
+      // If there are more methods in AuthService, mock them as well (e.g., logout: jest.fn(), etc.)
     } as unknown as jest.Mocked<AuthService>;
 
     routerMock = {
       navigate: jest.fn(),
-      // Если в Router есть ещё методы, их можно тут замокать
+      // If there are more methods in Router, they can be mocked here
     } as unknown as jest.Mocked<Router>;
 
     sessionServiceMock = {
       logIn: jest.fn(),
-      // Аналогично для других методов
+      // Similarly for other methods
     } as unknown as jest.Mocked<SessionService>;
 
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [ReactiveFormsModule,
+      imports: [
+        ReactiveFormsModule,
         RouterTestingModule,
         BrowserAnimationsModule,
-         MatCardModule,
+        MatCardModule,
         MatIconModule,
         MatFormFieldModule,
         MatInputModule,
-       ],
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock },
@@ -62,11 +63,11 @@ describe('LoginComponent (Jest)', () => {
     fixture.detectChanges();
   });
 
-  it('должен создаваться', () => {
-    expect(component).toBe;
+  it('should be created', () => {
+    expect(component).toBeTruthy();
   });
 
-  it('форма должна содержать поля email и password, которые изначально пустые', () => {
+  it('form should contain email and password fields, initially empty', () => {
     const emailControl = component.form.get('email');
     const passwordControl = component.form.get('password');
 
@@ -76,62 +77,62 @@ describe('LoginComponent (Jest)', () => {
     expect(passwordControl?.value).toBe('');
   });
 
-  it('поле email должно быть обязательным и иметь правильный формат', () => {
+  it('email field should be required and have the correct format', () => {
     const emailControl = component.form.get('email');
     if (!emailControl) {
-      fail('Контрол email не был найден');
+      fail('Email control was not found');
       return;
     }
 
-    // 1) Проверяем required
+    // 1) Check required validation
     emailControl.setValue('');
     expect(emailControl.valid).toBe(false);
     expect(emailControl.errors?.['required']).toBeTruthy();
 
-    // 2) Некорректный email
+    // 2) Invalid email format
     emailControl.setValue('not-email');
     expect(emailControl.valid).toBe(false);
     expect(emailControl.errors?.['email']).toBeTruthy();
 
-    // 3) Корректный email
+    // 3) Correct email format
     emailControl.setValue('test@example.com');
     expect(emailControl.valid).toBe(true);
   });
 
-  it('поле password должно быть обязательным', () => {
+  it('password field should be required', () => {
     const passwordControl = component.form.get('password');
     if (!passwordControl) {
-      fail('Контрол password не был найден');
+      fail('Password control was not found');
       return;
     }
 
-    // Проверяем required
+    // Check required validation
     passwordControl.setValue('');
     expect(passwordControl.valid).toBe(false);
     expect(passwordControl.errors?.['required']).toBeTruthy();
 
-    // Заполняем правильным значением
+    // Provide a valid value
     passwordControl.setValue('123456');
     expect(passwordControl.valid).toBe(true);
   });
 
-  it('при submit должен вызываться authService.login с данными формы', () => {
-    // Настраиваем форму
+  it('should call authService.login with form data on submit', () => {
+    // Set up form values
     const loginData = { email: 'test@example.com', password: '12345' };
     component.form.setValue(loginData);
 
-    // Мокаем успешный результат
+    // Mock successful response
     authServiceMock.login.mockReturnValue(of({} as SessionInformation));
 
-    // Вызываем submit
+    // Call submit
     component.submit();
 
-    // Проверяем вызов сервиса
+    // Verify service call
     expect(authServiceMock.login).toHaveBeenCalledTimes(1);
     expect(authServiceMock.login).toHaveBeenCalledWith(loginData);
   });
 
-  it('при успешном логине вызывается sessionService.logIn и router.navigate("/sessions")', () => {
+  it('should call sessionService.logIn and router.navigate("/sessions") on successful login', () => {
     authServiceMock.login.mockReturnValue(of({} as SessionInformation));
 
     component.submit();
@@ -140,9 +141,9 @@ describe('LoginComponent (Jest)', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith(['/sessions']);
   });
 
-  it('при ошибке логина onError становится true', () => {
-    // Имитация ошибки
-    authServiceMock.login.mockReturnValue(throwError(() => new Error('Ошибка')));
+  it('should set onError to true on login failure', () => {
+    // Simulate an error
+    authServiceMock.login.mockReturnValue(throwError(() => new Error('Error')));
 
     component.submit();
 
