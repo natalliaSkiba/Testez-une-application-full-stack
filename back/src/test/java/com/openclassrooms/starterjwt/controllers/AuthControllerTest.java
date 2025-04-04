@@ -72,7 +72,7 @@ AuthControllerTest {
 
     }
     @Test
-    void testLogin_UserNotFound_ShouldSetAdminToFalse() throws Exception {
+    void testLogin_UserNotFound_ShouldReturn401() throws Exception {
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail("nonexistent@example.com");
