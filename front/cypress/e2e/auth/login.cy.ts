@@ -3,7 +3,6 @@ import CypressConfig from "../../../cypress.config";
 
 describe('Login Tests', () => {
 
-  // Test user data
   const userAdmin = {
     id: 1,
     firstName: 'John',
@@ -35,7 +34,6 @@ describe('Login Tests', () => {
     cy.wait('@login');
   };
 
-  // Runs before each test case
   beforeEach(() => {
     cy.visit('/login');
   });
@@ -71,8 +69,6 @@ describe('Login Tests', () => {
     cy.get('input[formControlName=password]').type('wrongpassword');
 
     cy.contains('button', 'Submit').click();
-
-    // Check for error message visibility
     cy.get('.error').should('be.visible').and('contain', 'An error occurred');
   });
 
@@ -95,16 +91,12 @@ describe('Login Tests', () => {
     cy.get('input[formControlName=email]').type(user.email);
     cy.get('input[formControlName=password]').type(user.password);
 
-    // Verify password field is hidden
     cy.get('input[formControlName=password]').should('have.attr', 'type', 'password');
-    
-    // Click visibility toggle
+   
     cy.get('button[mat-icon-button]').click();
 
-    // Verify password is now visible
     cy.get('input[formControlName=password]').should('have.attr', 'type', 'text');
 
-    // Click visibility toggle again
     cy.get('button[mat-icon-button]').click();
     cy.get('input[formControlName=password]').should('have.attr', 'type', 'password');
   });
