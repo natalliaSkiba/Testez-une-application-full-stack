@@ -18,26 +18,22 @@ describe('LoginComponent (Jest)', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
 
-  // Declare variables for mock services
   let authServiceMock: jest.Mocked<AuthService>;
   let routerMock: jest.Mocked<Router>;
   let sessionServiceMock: jest.Mocked<SessionService>;
 
   beforeEach(async () => {
-    // Create mocks for services
-    authServiceMock = {
+      authServiceMock = {
       login: jest.fn(),
-      // If there are more methods in AuthService, mock them as well (e.g., logout: jest.fn(), etc.)
     } as unknown as jest.Mocked<AuthService>;
 
     routerMock = {
       navigate: jest.fn(),
-      // If there are more methods in Router, they can be mocked here
+    
     } as unknown as jest.Mocked<Router>;
 
     sessionServiceMock = {
       logIn: jest.fn(),
-      // Similarly for other methods
     } as unknown as jest.Mocked<SessionService>;
 
     await TestBed.configureTestingModule({
@@ -84,17 +80,14 @@ describe('LoginComponent (Jest)', () => {
       return;
     }
 
-    // 1) Check required validation
     emailControl.setValue('');
     expect(emailControl.valid).toBe(false);
     expect(emailControl.errors?.['required']).toBeTruthy();
 
-    // 2) Invalid email format
     emailControl.setValue('not-email');
     expect(emailControl.valid).toBe(false);
     expect(emailControl.errors?.['email']).toBeTruthy();
 
-    // 3) Correct email format
     emailControl.setValue('test@example.com');
     expect(emailControl.valid).toBe(true);
   });
@@ -105,36 +98,28 @@ describe('LoginComponent (Jest)', () => {
       fail('Password control was not found');
       return;
     }
-
-    // Check required validation
     passwordControl.setValue('');
     expect(passwordControl.valid).toBe(false);
     expect(passwordControl.errors?.['required']).toBeTruthy();
 
-    // Provide a valid value
     passwordControl.setValue('123456');
     expect(passwordControl.valid).toBe(true);
   });
 
   it('should call authService.login with form data on submit', () => {
-    // Set up form values
     const loginData = { email: 'test@example.com', password: '12345' };
     component.form.setValue(loginData);
 
-    // Mock successful response
     authServiceMock.login.mockReturnValue(of({} as SessionInformation));
-
-    // Call submit
     component.submit();
 
-    // Verify service call
+
     expect(authServiceMock.login).toHaveBeenCalledTimes(1);
     expect(authServiceMock.login).toHaveBeenCalledWith(loginData);
   });
 
   it('should call sessionService.logIn and router.navigate("/sessions") on successful login', () => {
     authServiceMock.login.mockReturnValue(of({} as SessionInformation));
-
     component.submit();
 
     expect(sessionServiceMock.logIn).toHaveBeenCalledTimes(1);
@@ -142,7 +127,7 @@ describe('LoginComponent (Jest)', () => {
   });
 
   it('should set onError to true on login failure', () => {
-    // Simulate an error
+
     authServiceMock.login.mockReturnValue(throwError(() => new Error('Error')));
 
     component.submit();
